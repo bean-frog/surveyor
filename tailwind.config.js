@@ -1,19 +1,18 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["src/**/*.jsx"],
+  content: ['src/**/*.jsx'],
   theme: {
     extend: {},
   },
   plugins: [
-  	require("@catppuccin/tailwindcss")({
-  		prefix: "ctp",
-  		defaultFlavour: "latte"
-  	}),
-    require('daisyui')
+    require('@catppuccin/tailwindcss')({
+      prefix: 'ctp',
+      defaultFlavour: 'latte',
+    }),
+    require('daisyui'),
   ],
-  daisyui:{
+  daisyui: {
     themes: false,
-    darkTheme: false
-  }
+    darkTheme: false,
+  },
 }
-

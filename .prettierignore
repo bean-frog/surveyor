@@ -1,0 +1,6 @@
+# Ignore artifacts:
+build
+coverage
+
+# minified by tailwind
+src/index.css

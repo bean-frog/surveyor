@@ -1,6 +1,4 @@
 function Parents() {
-    return (
-        <h1>Parents</h1>
-    )
+  return <h1>Parents</h1>
 }
-export default Parents;
+export default Parents
