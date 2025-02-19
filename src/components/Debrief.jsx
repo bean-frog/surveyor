@@ -36,6 +36,9 @@ function Debrief() {
           showles-banerji@pausd.org
         </a>
       </li>
+      <li className="text-lg leading-relaxed text-ctp-text">
+        <strong>Your response</strong> has been collected, and you are free to leave this page.
+      </li>
     </ul>
   )
 }

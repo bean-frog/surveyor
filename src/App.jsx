@@ -16,7 +16,9 @@ function Home() {
       <div className="flex flex-col flex-grow justify-center items-center w-full">
         <div className="flex flex-col justify-center items-center p-6 pb-2 rounded-lg border-2 border-solid lg:w-3/5 md:w-4/5 sm:w-full h-fit border-ctp-overlay2 mb-6 overflow-y-hidden mb-auto max-h-[90vh] min-h-0">
         {surveyComplete ? (
-  <Debrief />
+          <LowTaperFade>
+            <Debrief />
+          </LowTaperFade>
 ) : localStorage.getItem('0x32') === '8afcf5' ? (
   <div className="flex flex-col justify-center items-center">
     <span className="font-bold">
