@@ -9,58 +9,70 @@ import {
   doc,
 } from 'firebase/firestore'
 
-const Likert = memo(({ id, question, onChange }) => {
-  return (
-    <div className="mb-6 p-4 bg-ctp-surface1 shadow-md rounded-lg">
-      <p className="mb-2 text-ctp-text font-medium">{question}</p>
-      <div className="flex justify-between">
-        {[1, 2, 3, 4, 5].map((value) => (
-          <label
-            key={value}
-            className="flex items-center gap-2 cursor-pointer hover:text-ctp-lavender"
-          >
-            <input
-              type="radio"
-              name={`q${id}`}
-              value={value}
-              onChange={(e) => onChange(id, e.target.value)}
-              className="radio checked:bg-ctp-lavender focus:ring-ctp-overlay2"
-            />
-            <span className="text-ctp-subtext0">{value}</span>
-          </label>
-        ))}
-      </div>
-    </div>
-  )
-})
+const baseContainerClasses =
+  'mb-6 p-6 shadow-lg border border-ctp-surface2 rounded-lg w-full'
+const titleClasses = 'inter mb-4 text-ctp-text font-semibold text-xl'
+const labelClasses =
+  'flex items-center gap-2 cursor-pointer hover:text-ctp-lavender'
+const inputClasses = 'radio checked:bg-ctp-lavender focus:ring-ctp-overlay2'
+const spanClasses = 'text-ctp-subtext0'
 
-const TrueFalse = memo(({ id, question, onChange }) => {
-  return (
-    <div className="mb-6 p-4 bg-ctp-surface1 shadow-md rounded-lg">
-      <p className="mb-2 text-ctp-text font-medium">{question}</p>
-      <div className="flex gap-6">
-        {[
-          { label: 'True', value: 'true' },
-          { label: 'False', value: 'false' },
-        ].map(({ label, value }) => (
-          <label
-            key={label}
-            className="flex items-center gap-2 cursor-pointer hover:text-ctp-lavender"
-          >
-            <input
-              type="radio"
-              name={`q${id}`}
-              value={value}
-              onChange={(e) => onChange(id, e.target.value)}
-              className="radio checked:bg-ctp-lavender focus:ring-ctp-overlay2"
-            />
-            <span className="text-ctp-subtext0">{label}</span>
-          </label>
-        ))}
-      </div>
+const Likert = memo(({ id, question, onChange }) => (
+  <div className={baseContainerClasses}>
+    <p className={titleClasses}>{question}</p>
+    <div
+      className="flex justify-between"
+      role="radiogroup"
+      aria-labelledby={`q${id}-label`}
+    >
+      {[1, 2, 3, 4, 5].map((value) => (
+        <label key={value} className={labelClasses}>
+          <input
+            type="radio"
+            name={`q${id}`}
+            value={value}
+            onChange={(e) => onChange(id, e.target.value)}
+            className={inputClasses}
+            aria-labelledby={`q${id}-option${value}`}
+          />
+          <span id={`q${id}-option${value}`} className={spanClasses}>
+            {value}
+          </span>
+        </label>
+      ))}
     </div>
-  )
-})
+  </div>
+))
+
+const TrueFalse = memo(({ id, question, onChange }) => (
+  <div className={baseContainerClasses}>
+    <p className={titleClasses}>{question}</p>
+    <div
+      className="flex gap-6"
+      role="radiogroup"
+      aria-labelledby={`q${id}-label`}
+    >
+      {[
+        { label: 'True', value: 'true' },
+        { label: 'False', value: 'false' },
+      ].map(({ label, value }) => (
+        <label key={label} className={labelClasses}>
+          <input
+            type="radio"
+            name={`q${id}`}
+            value={value}
+            onChange={(e) => onChange(id, e.target.value)}
+            className={inputClasses}
+            aria-labelledby={`q${id}-option${value}`}
+          />
+          <span id={`q${id}-option${value}`} className={spanClasses}>
+            {label}
+          </span>
+        </label>
+      ))}
+    </div>
+  </div>
+))
 
 const OpenEnded = memo(({ id, question, onChange }) => {
   const [localValue, setLocalValue] = useState('')
@@ -74,33 +86,55 @@ const OpenEnded = memo(({ id, question, onChange }) => {
   }, [localValue, id, onChange])
 
   return (
-    <div className="mb-6 p-4 bg-ctp-surface1 shadow-md rounded-lg">
-      <p className="mb-2 text-ctp-text font-medium">{question}</p>
+    <div className={baseContainerClasses}>
+      <p className={titleClasses}>{question}</p>
       <input
         type="text"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         placeholder="Type your response here..."
-        className="input input-bordered w-full max-w-md bg-ctp-base text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:ring focus:ring-ctp-lavender"
+        className="w-full input input-bordered bg-ctp-base text-ctp-text placeholder-ctp-subtext0 focus:outline-none focus:ring focus:ring-ctp-lavender"
+        aria-label={question}
       />
     </div>
   )
 })
 
-// Component map to render the appropriate question type
+/*
+const InfoSection = ({ id, title, subtype, content, alt }) => {
+  return (
+    <div className={baseContainerClasses}>
+      <p className={titleClasses}>{title}</p>
+      {subtype === 1 ? (
+        <img src={content} alt={alt}/>
+      ) : subtype === 2 ? (
+        <video controls>
+          <source src={content} alt={alt} type="video/mp4" />
+          Your browser appears to not support the video tag. Alt text: {alt}
+        </video>
+      ) : subtype === 3 ? (
+        <p>{content}</p>
+      ) : null}
+    </div>
+  );
+};
+*/
+
+
+// Component map
 const QuestionComponents = {
   1: Likert,
   2: TrueFalse,
   3: OpenEnded,
 }
 
-function Survey() {
+function Survey({ onCompleted }) {
   const [questions, setQuestions] = useState([])
   const [responses, setResponses] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [validationError, setValidationError] = useState('')
 
-  // Fetch questions from Firestore
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
@@ -140,9 +174,9 @@ function Survey() {
       let newId
       if (!querySnapshot.empty) {
         const highestDoc = querySnapshot.docs[0]
-        newId = (parseInt(highestDoc.id, 10) + 1).toString().padStart(3, '0')
+        newId = (parseInt(highestDoc.id, 10) + 1).toString()//.padStart(3, '0')
       } else {
-        newId = '001'
+        newId = '1' //001
       }
       const newDocRef = doc(responsesCollection, newId)
       await setDoc(newDocRef, data)
@@ -154,7 +188,18 @@ function Survey() {
   }
 
   const handleSubmit = () => {
+    // Validate responses
+    const unansweredQuestions = questions.filter((q) => !responses[`q${q.id}`])
+
+    if (unansweredQuestions.length > 0) {
+      setValidationError('Please answer all questions before submitting.')
+      return
+    }
+
+    // Clear validation error and proceed to submit
+    setValidationError('')
     addToDB(responses)
+    onCompleted()
   }
 
   if (loading) {
@@ -174,9 +219,9 @@ function Survey() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-ctp-base text-ctp-text">
+    <div className="flex flex-col justify-center items-center mt-auto w-full h-full bg-ctp-base text-ctp-text overflow-y-scroll">
       <form
-        className="w-full max-w-2xl p-6 space-y-6 bg-ctp-surface2 rounded-lg shadow-lg"
+        className="overflow-y-scroll p-6 mt-auto space-y-6 w-full rounded-lg bg-ctp-base"
         onSubmit={(e) => {
           e.preventDefault()
           handleSubmit()
@@ -198,10 +243,13 @@ function Survey() {
             />
           )
         })}
+        {validationError && (
+          <p className="text-center text-red-500">{validationError}</p>
+        )}
         <div className="flex justify-center">
           <button
             type="submit"
-            className="btn btn-primary bg-ctp-lavender text-ctp-base hover:bg-ctp-overlay1 shadow-md border-none"
+            className="border-none shadow-md btn btn-primary bg-ctp-lavender text-ctp-base hover:bg-ctp-overlay1"
             disabled={questions.length === 0}
           >
             Submit

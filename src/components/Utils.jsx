@@ -110,7 +110,7 @@ const Panel = () => {
 
   const createNewQuestion = async () => {
     const questionCount = questions.length
-    let newId = `0${questionCount + 1}`
+    let newId = `${questionCount + 1}`
     setqData((prev) => ({ ...prev, id: newId }))
 
     const { value: formData, isConfirmed } = await Alert.fire({
@@ -160,6 +160,134 @@ const Panel = () => {
       fetchQuestions()
     }
   }
+/*
+  const createNewInfoSection = async () => {
+    const questionCount = questions.length
+    let newId = `${questionCount + 1}`
+
+    setInfoData((prev) => ({ ...prev, id: newId }))
+
+    const getSubtypeLabel = (subtype) => {
+      switch (subtype) {
+        case '1':
+          return 'Image'
+        case '2':
+          return 'Video'
+        case '3':
+          return 'Text'
+        default:
+          return ''
+      }
+    }
+
+    const formHTML = `
+      <div class="form-container">
+        <label for="title">Title</label>
+        <input id="title" class="swal2-input" placeholder="Enter section title">
+        
+        <label for="subtype">Content Type</label>
+        <select id="subtype" class="swal2-input" onchange="updateFormFields()">
+          <option value="1">Image</option>
+          <option value="2">Video</option>
+          <option value="3">Text</option>
+        </select>
+  
+        <div id="altTextContainer">
+          <label for="altText">Alt Text</label>
+          <input id="altText" class="swal2-input" placeholder="Enter alt text">
+        </div>
+  
+        <label for="content">Content</label>
+        <div id="contentContainer">
+          <input id="content" class="swal2-input" placeholder="Enter content URL">
+        </div>
+      </div>
+    `
+
+    const updateFormFields = () => {
+      const subtype = document.getElementById('subtype').value
+      const contentContainer = document.getElementById('contentContainer')
+      const altTextContainer = document.getElementById('altTextContainer')
+
+      // Show/hide alt text based on subtype
+      if (subtype === '3') {
+        altTextContainer.style.display = 'none'
+      } else {
+        altTextContainer.style.display = 'block'
+      }
+
+      // Update content input based on subtype
+      if (subtype === '3') {
+        contentContainer.innerHTML = `
+          <textarea id="content" class="swal2-textarea" placeholder="Enter your content" style="height: 150px;"></textarea>
+        `
+      } else {
+        contentContainer.innerHTML = `
+          <input id="content" class="swal2-input" placeholder="Enter ${getSubtypeLabel(subtype)} URL">
+        `
+      }
+    }
+
+    const { value: formData, isConfirmed } = await Alert.fire({
+      title: 'Create a new Info Section',
+      html: formHTML,
+      didOpen: () => {
+        // Add the update function to window so it can be called from the select onChange
+        window.updateFormFields = updateFormFields
+      },
+      focusConfirm: false,
+      preConfirm: () => {
+        const title = document.getElementById('title').value
+        const subtype = document.getElementById('subtype').value
+        const content = document.getElementById('content').value
+        const altText = document.getElementById('altText')?.value
+
+        if (!title || !subtype || !content) {
+          Alert.showValidationMessage('Please fill in all required fields')
+          return null
+        }
+
+        if ((subtype === '1' || subtype === '2') && !altText) {
+          Alert.showValidationMessage(
+            'Alt text is required for image and video content'
+          )
+          return null
+        }
+
+        return {
+          title,
+          subtype,
+          content,
+          altText: subtype === '3' ? null : altText,
+        }
+      },
+    })
+
+    if (isConfirmed && formData) {
+      try {
+        const questionRef = doc(db, 'questions', newId)
+        await setDoc(questionRef, {
+          id: newId,
+          type: '4', // Type 4 for Info Section
+          title: formData.title,
+          subtype: formData.subtype,
+          content: formData.content,
+          altText: formData.altText,
+        })
+
+        fireToast('Info section added successfully', 1000, true)
+      } catch (error) {
+        Alert.fire({
+          icon: 'error',
+          title: 'Error adding info section',
+          text: error.message,
+        })
+      }
+
+      fetchQuestions()
+    }
+  }
+*/
   const detectIrregularResponses = () => {
     setDetections({})
     setDetectionSummary(null)
@@ -179,7 +307,7 @@ const Panel = () => {
         }
         summaryJSX.push(
           <div
-            className="flex flex-col border border-solid border-ctp-surface2 rounded-lg p-2 my-2"
+            className="flex flex-col p-2 my-2 rounded-lg border border-solid border-ctp-surface2"
             key={item.id}
           >
             <span>
@@ -202,15 +330,15 @@ const Panel = () => {
 
   return (
     <div className="flex h-screen bg-ctp-base text-ctp-text">
-      <div className="w-1/3 border-r border-ctp-overlay0 overflow-y-scroll p-4">
-        <h2 className="text-lg font-bold mb-4">Responses</h2>
+      <div className="overflow-y-scroll p-4 w-1/3 border-r border-ctp-overlay0">
+        <h2 className="mb-4 text-lg font-bold">Responses</h2>
         {responses.map((response) => (
           <div
             key={response.id}
-            className="collapse collapse-arrow border border-ctp-overlay0 rounded-box mb-2"
+            className="mb-2 border collapse collapse-arrow border-ctp-overlay0 rounded-box"
           >
             <input type="checkbox" />
-            <div className="collapse-title font-medium">
+            <div className="font-medium collapse-title">
               Response ID: {response.id}
             </div>
             <div className="collapse-content">
@@ -226,18 +354,18 @@ const Panel = () => {
         ))}
       </div>
 
-      <div className="w-1/3 border-r border-ctp-overlay0 overflow-y-scroll p-4">
-        <h2 className="text-lg font-bold mb-4">Questions</h2>
+      <div className="overflow-y-scroll p-4 w-1/3 border-r border-ctp-overlay0">
+        <h2 className="mb-4 text-lg font-bold">Questions</h2>
         {questions.map((question) => (
           <div
             key={question.id}
-            className="collapse collapse-arrow border border-ctp-overlay0 rounded-box mb-2"
+            className="mb-2 border collapse collapse-arrow border-ctp-overlay0 rounded-box"
           >
             <input type="checkbox" />
-            <div className="collapse-title font-medium">
+            <div className="font-medium collapse-title">
               Question ID: {question.id}
             </div>
-            <div className="collapse-content space-y-2">
+            <div className="space-y-2 collapse-content">
               <p>
                 <span className="font-bold">Question Text:</span>{' '}
                 <input
@@ -254,7 +382,7 @@ const Panel = () => {
                       question: e.target.value,
                     })
                   }
-                  className="input input-bordered input-sm w-full bg-ctp-surface0 text-ctp-text"
+                  className="w-full input input-bordered input-sm bg-ctp-surface0 text-ctp-text"
                 />
               </p>
               <p>
@@ -288,11 +416,14 @@ const Panel = () => {
             </div>
           </div>
         ))}
-        <div className="flex flex-row items-center justify-center w-full h-fit">
-          <button onClick={createNewQuestion} className="btn btn-circle">
+        <div className="flex flex-row justify-center items-center w-full h-fit">
+          <button
+            onClick={createNewQuestion}
+            className="rounded-full btn btn-md"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
+              className="w-6 h-6"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -304,10 +435,31 @@ const Panel = () => {
                 d="M12 5v14M5 12h14"
               />
             </svg>
+            Question
+          </button>
+          <button
+            onClick={createNewInfoSection}
+            className="rounded-full btn btn-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 5v14M5 12h14"
+              />
+            </svg>
+            Info
           </button>
         </div>
       </div>
-      <div className="w-1/3 overflow-y-scroll p-4">
+      <div className="overflow-y-scroll p-4 w-1/3">
         <div className="flex flex-col items-center space-y-2">
           <button
             className="w-full h-fit btn"
@@ -328,8 +480,8 @@ const Panel = () => {
             Download questions as JSON
           </button>
           {detectionSummary ? (
-            <div className="flex flex-col items-center justify-center w-full h-fit">
-              <h1 className="text-lg font-bold mt-4">Detections</h1>
+            <div className="flex flex-col justify-center items-center w-full h-fit">
+              <h1 className="mt-4 text-lg font-bold">Detections</h1>
               {detectionSummary}
             </div>
           ) : null}
@@ -342,8 +494,6 @@ const Panel = () => {
 const checkCode = async (e, setAccess) => {
   e.preventDefault()
   const input = e.target.input.value
-  const accessHash =
-    'aa706137d0c183ee225b25b3355cd29b2ea893b01c2f7e2a9d455fd4c113a8c3'
   const calculateHash = async (message) => {
     const encoder = new TextEncoder()
     const data = encoder.encode(message)
@@ -353,7 +503,7 @@ const checkCode = async (e, setAccess) => {
       .join('')
   }
   const inputHash = await calculateHash(input)
-  if (inputHash === accessHash) {
+  if (inputHash === 'aa706137d0c183ee225b25b3355cd29b2ea893b01c2f7e2a9d455fd4c113a8c3') {
     setAccess(true)
     fireToast('Welcome', null)
   } else {
@@ -368,13 +518,13 @@ function Utils() {
       {accessGranted ? (
         <Panel />
       ) : (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col justify-center items-center">
           <form onSubmit={(e) => checkCode(e, setAccess)}>
             <input
               type="password"
               name="input"
               autoComplete="off"
-              className="input mr-2"
+              className="mr-2 input"
             />
             <button
               type="submit"
