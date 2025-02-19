@@ -37,7 +37,7 @@ const Panel = () => {
     const questionList = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }))
+    })).sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort numerically by ID
     setQuestions(questionList)
   }
   // Fetch responses

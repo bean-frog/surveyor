@@ -142,10 +142,13 @@ function Survey({ onCompleted }) {
         const q = query(questionsCollection, orderBy('__name__'))
         const querySnapshot = await getDocs(q)
 
-        const questionList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
+        const questionList = querySnapshot.docs
+  .map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }))
+  .sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort numerically by ID
+
 
         setQuestions(questionList)
         setLoading(false)
@@ -219,7 +222,7 @@ function Survey({ onCompleted }) {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center mt-auto w-full h-full bg-ctp-base text-ctp-text overflow-y-scroll">
+    <div className="flex overflow-y-scroll flex-col justify-center items-center mt-auto w-full h-full bg-ctp-base text-ctp-text">
       <form
         className="overflow-y-scroll p-6 mt-auto space-y-6 w-full rounded-lg bg-ctp-base"
         onSubmit={(e) => {
