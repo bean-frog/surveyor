@@ -437,10 +437,12 @@ const Panel = () => {
             </svg>
             Question
           </button>
+          {/*
           <button
             onClick={createNewInfoSection}
             className="rounded-full btn btn-md"
           >
+        
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-6 h-6"
@@ -457,6 +459,7 @@ const Panel = () => {
             </svg>
             Info
           </button>
+          */}
         </div>
       </div>
       <div className="overflow-y-scroll p-4 w-1/3">

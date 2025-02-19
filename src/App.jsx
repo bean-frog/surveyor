@@ -72,7 +72,6 @@ function App() {
             <Route path="/mission" element={<Mission />} />
             <Route path="/survey" element={<Survey />} />
             <Route path="/debrief" element={<Debrief />}/>
-            {/**remove for prod */}
             <Route path="/utils" element={<Utils />} />
           </Routes>
         </Router>
