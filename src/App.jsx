@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom'
 import Consent from './components/Consent'
 import Mission from './components/Mission'
 import Parents from './components/Parents'
@@ -9,6 +9,7 @@ import Debrief from './components/Debrief'
 import LowTaperFade from './components/LowTaperFade'
 
 function Home() {
+  const navigate = useNavigate()
   const [consentGiven, setConsentGiven] = useState(false)
   const [surveyComplete, setSurveyComplete] = useState(false)
   return (
@@ -24,8 +25,10 @@ function Home() {
 ) : localStorage.getItem('0x32') === '8afcf5' ? (
   <div className="flex flex-col justify-center items-center">
     <span className="font-bold">
-    You've already submitted a response!
+    A response has already be submitted on this device.
   </span>
+  <button onClick={() => {localStorage.setItem("0x32", null); navigate("/")}} className='underline text-md text-ctp-text inter-regular'>I am a different person who has not submitted a response</button>
+
     <div className="flex flex-row">
       <Link to='/debrief' className='underline text-md text-ctp-text inter-regular'>View Debrief</Link>
     </div>

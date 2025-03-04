@@ -25,7 +25,6 @@ const Panel = () => {
   const [detections, setDetections] = useState({})
   const [detectionSummary, setDetectionSummary] = useState(null)
   const [qData, setqData] = useState({
-    // used for new question creation
     id: '',
     question: '',
     type: '',
