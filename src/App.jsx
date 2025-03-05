@@ -7,6 +7,7 @@ import Survey from './components/Survey'
 import Utils from './components/Utils'
 import Debrief from './components/Debrief'
 import LowTaperFade from './components/LowTaperFade'
+import Graphs from './components/Graphs'
 
 function Home() {
   const navigate = useNavigate()
@@ -82,6 +83,7 @@ function App() {
             <Route path="/survey" element={<Survey />} />
             <Route path="/debrief" element={<Debrief />}/>
             <Route path="/utils" element={<Utils />} />
+            <Route path="/utils/graphs" element={<Graphs />} />
           </Routes>
         </Router>
       </div>

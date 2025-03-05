@@ -3,7 +3,7 @@ import { db } from '../firebase.config.js'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { collection, getDocs, doc, updateDoc, setDoc } from 'firebase/firestore'
-
+import Graphs from './Graphs.jsx'
 const Alert = withReactContent(Swal)
 
 const fireToast = (message, timer, showProg) => {
@@ -522,6 +522,7 @@ function Utils() {
     <>
       {accessGranted ? (
         <Panel />
+
       ) : (
         <div className="flex flex-col justify-center items-center">
           <form onSubmit={(e) => checkCode(e, setAccess)}>
