@@ -1,0 +1,15 @@
+Survey.jsx
+- show 1 question at a time without submitting until end
+- survey completion animation/gif or something
+
+Parents.jsx
+- create this component and link it to survey once parental consent completed
+
+Utils.jsx
+- update question display to show info sections (less important)
+Other
+- add age range and non-personal geographic questions
+- test changes to util and survey related to id poadding
+
+
+
