@@ -76,7 +76,7 @@ function App() {
       <div className="flex overflow-x-hidden overflow-y-hidden justify-center items-center pt-4 mt-auto w-screen h-screen bg-ctp-base">
         <Router>
           <Routes>
-            <Route path="/" element={<Problem />} />
+            <Route path="/" element={<Home />} />
             <Route path="/for-parents" element={<Parents />} />
             <Route path="/mission" element={<Mission />} />
             <Route path="/survey" element={<Survey />} />

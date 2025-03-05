@@ -331,26 +331,29 @@ const Panel = () => {
     <div className="flex h-screen bg-ctp-base text-ctp-text">
       <div className="overflow-y-scroll p-4 w-1/3 border-r border-ctp-overlay0">
         <h2 className="mb-4 text-lg font-bold">Responses</h2>
-        {responses.map((response) => (
-          <div
-            key={response.id}
-            className="mb-2 border collapse collapse-arrow border-ctp-overlay0 rounded-box"
-          >
-            <input type="checkbox" />
-            <div className="font-medium collapse-title">
-              Response ID: {response.id}
-            </div>
-            <div className="collapse-content">
-              {Object.entries(response)
-                .filter(([key]) => key.startsWith('q'))
-                .map(([key, value]) => (
-                  <p key={key}>
-                    <span className="font-bold">{key}:</span> {value}
-                  </p>
-                ))}
-            </div>
-          </div>
-        ))}
+        {responses
+  .sort((a, b) => parseInt(a.id, 10) - parseInt(b.id, 10)) // Numeric sorting
+  .map((response) => (
+    <div
+      key={response.id}
+      className="mb-2 border collapse collapse-arrow border-ctp-overlay0 rounded-box"
+    >
+      <input type="checkbox" />
+      <div className="font-medium collapse-title">
+        Response ID: {parseInt(response.id, 10)} {/* Remove padding */}
+      </div>
+      <div className="collapse-content">
+        {Object.entries(response)
+          .filter(([key]) => key.startsWith('q'))
+          .map(([key, value]) => (
+            <p key={key}>
+              <span className="font-bold">{key}:</span> {value}
+            </p>
+          ))}
+      </div>
+    </div>
+  ))}
+
       </div>
 
       <div className="overflow-y-scroll p-4 w-1/3 border-r border-ctp-overlay0">

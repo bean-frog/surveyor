@@ -172,23 +172,32 @@ function Survey({ onCompleted }) {
   const addToDB = async (data) => {
     try {
       const responsesCollection = collection(db, 'responses')
-      const q = query(responsesCollection, orderBy('__name__', 'desc'))
-      const querySnapshot = await getDocs(q)
+      const querySnapshot = await getDocs(responsesCollection) // No Firestore ordering
+  
       let newId
+  
       if (!querySnapshot.empty) {
-        const highestDoc = querySnapshot.docs[0]
-        newId = (parseInt(highestDoc.id, 10) + 1).toString()//.padStart(3, '0')
+        const numericIds = querySnapshot.docs
+          .map((doc) => parseInt(doc.id, 10))
+          .filter((id) => !isNaN(id))
+  
+        const highestId = Math.max(...numericIds, 0)
+  
+        newId = (highestId + 1).toString().padStart(4, '0')
       } else {
-        newId = '1' //001
+        newId = '0001' // Start from '0001'
       }
+  
       const newDocRef = doc(responsesCollection, newId)
       await setDoc(newDocRef, data)
-
+  
       console.log(`Document successfully written with ID: ${newId}`)
     } catch (error) {
       console.error('Error adding document: ', error)
     }
   }
+  
+  
 
   const handleSubmit = () => {
     // Validate responses
