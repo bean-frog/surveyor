@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { db } from '../firebase.config.js'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import { collection, getDocs, doc, updateDoc, setDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, updateDoc, setDoc, onSnapshot } from 'firebase/firestore'
 import Graphs from './Graphs.jsx'
 const Alert = withReactContent(Swal)
 
@@ -49,9 +49,42 @@ const Panel = () => {
     setResponses(responseList)
   }
 
-  fetchQuestions()
-  fetchResponses()
+  useEffect(() => {
+    const unsubscribeQuestions = onSnapshot(
+      collection(db, 'questions'),
+      (querySnapshot) => {
+        const questionList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })).sort((a, b) => parseInt(a.id) - parseInt(b.id)) // Sort numerically by ID
+        setQuestions(questionList)
+      },
+      (error) => {
+        console.error("Error fetching questions: ", error)
+      }
+    )
 
+    return () => unsubscribeQuestions() // Cleanup listener when component unmounts
+  }, []) 
+
+  // Fetch responses with a real-time listener
+  useEffect(() => {
+    const unsubscribeResponses = onSnapshot(
+      collection(db, 'responses'),
+      (querySnapshot) => {
+        const responseList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setResponses(responseList)
+      },
+      (error) => {
+        console.error("Error fetching responses: ", error)
+      }
+    )
+
+    return () => unsubscribeResponses() // Cleanup listener when component unmounts
+  }, [])
   // Handle save question edits
   const saveQuestion = async (id) => {
     try {
