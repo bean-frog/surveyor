@@ -59,10 +59,8 @@ const GraphCard = ({ question, responses }) => {
       {
         label: question.question,
         data: counts,
-        backgroundColor: qType === 1
-          ? ['#fab387', '#f5c2e7', '#a6e3a1', '#89b4fa', '#f38ba8']
-          : ['#a6e3a1', '#f38ba8'],
-        borderColor: '#eba0ac',
+        backgroundColor: '#c0c0c0',
+        borderColor: '#010203',
         borderWidth: 1,
       },
     ],
@@ -162,7 +160,8 @@ const GraphGrid = () => {
 
   return (
     <div className="overflow-y-scroll p-4 w-full h-full bg-ctp-base text-ctp-text">
-      <h1 className="mb-6 text-3xl font-bold">Survey Results</h1>
+      <h1 className="mb-2 text-3xl font-bold">Survey Results</h1>
+      <h1 className="mb-6 text-xl font-bold">Total Responses: {responses.length}</h1>
 
       <div className="grid grid-cols-1 gap-4 mb-8 md:grid-cols-2 lg:grid-cols-3">
         {graphQuestions.map(question => (
@@ -197,7 +196,7 @@ export default function Graphs()  {
         } 
       }
       return (
-        <>
+       /* <>
     {access ? (
         <GraphGrid />
     ) : (
@@ -219,5 +218,7 @@ export default function Graphs()  {
         </div>
     )}
     </>
+    */
+   <GraphGrid />
 )
 }

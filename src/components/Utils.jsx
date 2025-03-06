@@ -484,6 +484,8 @@ const Panel = () => {
           <button className="w-full h-fit btn" onClick={downloadQuestions}>
             Download questions as JSON
           </button>
+          <button className="w-full btn h-fit" onClick={()=>document.getElementById('graphmodal').showModal()}>Show Graphs</button>
+
           {detectionSummary ? (
             <div className="flex flex-col justify-center items-center w-full h-fit">
               <h1 className="mt-4 text-lg font-bold">Detections</h1>
@@ -521,8 +523,14 @@ function Utils() {
   return (
     <>
       {accessGranted ? (
+        <>
+<dialog id="graphmodal" className="modal">
+  <div className="w-11/12 max-w-full modal-box">
+    <Graphs/>
+  </div>
+</dialog>
         <Panel />
-
+        </>
       ) : (
         <div className="flex flex-col justify-center items-center">
           <form onSubmit={(e) => checkCode(e, setAccess)}>
