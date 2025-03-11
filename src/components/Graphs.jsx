@@ -15,26 +15,28 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+
 const GraphCard = ({ question, responses }) => {
   const qType = Number(question.type); // ensure numeric type
   const key = `q${question.id}`;
   let labels = [];
   let counts = [];
+  let values = [];
 
   if (qType === 1) {
     // Likert scale (1-5)
     labels = ['1', '2', '3', '4', '5'];
     counts = [0, 0, 0, 0, 0];
     responses.forEach(response => {
-      const answer = response[key];
-      const answerNum = Number(answer);
-      if (!isNaN(answerNum) && answerNum >= 1 && answerNum <= 5) {
-        counts[answerNum - 1]++;
+      const answer = Number(response[key]);
+      if (!isNaN(answer) && answer >= 1 && answer <= 5) {
+        counts[answer - 1]++;
+        values.push(answer);
       }
     });
   } else if (qType === 2) {
     // True/False question
-    labels = ['True', 'False'];
+    labels = ['True (1)', 'False (0)'];
     counts = [0, 0];
     responses.forEach(response => {
       let answer = response[key];
@@ -43,8 +45,10 @@ const GraphCard = ({ question, responses }) => {
       }
       if (answer === true) {
         counts[0]++;
+        values.push(1);
       } else if (answer === false) {
         counts[1]++;
+        values.push(0);
       }
     });
   }
@@ -86,12 +90,28 @@ const GraphCard = ({ question, responses }) => {
     },
   };
 
+  // Calculate mean
+  const mean = values.length > 0 ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : 'N/A';
+
+  // Calculate mode
+  const mode =
+    values.length > 0
+      ? Object.entries(values.reduce((acc, val) => ((acc[val] = (acc[val] || 0) + 1), acc), {}))
+          .sort((a, b) => b[1] - a[1])[0][0]
+      : 'N/A';
+
   return (
-    <div className="p-4 rounded-lg border shadow border-ctp-base bg-ctp-surface" style={{ height: '300px' }}>
+    <div className="p-4 rounded-lg border shadow border-ctp-base bg-ctp-surface" style={{ height: '350px' }}>
       <Bar data={data} options={options} />
+      <div className="flex flex-row justify-center items-center mb-2 space-x-4 text-center text-md">
+        <p>Mean: <strong>{mean}</strong></p>
+        <p>Mode: <strong>{mode}</strong></p>
+      </div>
     </div>
   );
 };
+
+
 
 const OpenEndedCard = ({ question, responses }) => {
   const key = `q${question.id}`;
