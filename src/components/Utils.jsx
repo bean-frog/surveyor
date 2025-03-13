@@ -373,7 +373,7 @@ const Panel = () => {
     >
       <input type="checkbox" />
       <div className="font-medium collapse-title">
-        Response ID: {parseInt(response.id, 10)} {/* Remove padding */}
+        Response ID: {parseInt(response.id, 10)} 
       </div>
       <div className="collapse-content">
         {Object.entries(response)

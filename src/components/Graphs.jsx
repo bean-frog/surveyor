@@ -118,23 +118,25 @@ const OpenEndedCard = ({ question, responses }) => {
   const answers = responses
     .map(response => response[key])
     .filter(answer => answer !== undefined && answer !== null);
-
-  return (
-    <div className="p-4 mb-4 rounded-lg border shadow border-ctp-base bg-ctp-surface">
-      <h3 className="font-bold text-ctp-text">{question.question}</h3>
-      <ul className="mt-2">
-        {answers.length ? (
-          answers.map((ans, idx) => (
-            <li key={idx} className="py-1 border-b text-ctp-subtext border-ctp-base">
-              {ans}
-            </li>
-          ))
-        ) : (
-          <li className="text-ctp-subtext">No responses yet.</li>
-        )}
-      </ul>
-    </div>
-  );
+    const excludedResponses = ["na", "n/a", "n a"].map(str => str.toLowerCase().trim());
+    const filteredAnswers = answers.filter(ans => !excludedResponses.includes(ans.toLowerCase().trim()));
+    return (
+      <div className="p-4 mb-4 rounded-lg border shadow border-ctp-base bg-ctp-surface">
+        <h3 className="font-bold text-ctp-text">{question.question}</h3>
+        <ul className="mt-2 list-disc">
+          {filteredAnswers.length ? (
+            filteredAnswers.map((ans, idx) => (
+              <li key={idx} className="py-1 border-b text-ctp-subtext border-ctp-base">
+                {ans}
+              </li>
+            ))
+          ) : (
+            <li className="text-ctp-subtext">No responses yet.</li>
+          )}
+        </ul>
+      </div>
+    );
+    
 };
 
 const GraphGrid = () => {
