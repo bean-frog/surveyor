@@ -17,14 +17,13 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 
 const GraphCard = ({ question, responses }) => {
-  const qType = Number(question.type); // ensure numeric type
+  const qType = Number(question.type);
   const key = `q${question.id}`;
   let labels = [];
   let counts = [];
   let values = [];
 
   if (qType === 1) {
-    // Likert scale (1-5)
     labels = ['1', '2', '3', '4', '5'];
     counts = [0, 0, 0, 0, 0];
     responses.forEach(response => {
@@ -35,7 +34,6 @@ const GraphCard = ({ question, responses }) => {
       }
     });
   } else if (qType === 2) {
-    // True/False question
     labels = ['True (1)', 'False (0)'];
     counts = [0, 0];
     responses.forEach(response => {
@@ -53,15 +51,13 @@ const GraphCard = ({ question, responses }) => {
     });
   }
 
-  // Use total number of responses (or at least 1) as the max value 
-  // to keep each graph at the same height.
   const overallMax = responses.length > 0 ? responses.length : 1;
 
   const data = {
     labels,
     datasets: [
       {
-        label: question.question,
+        label: '', // Remove Chart.js title
         data: counts,
         backgroundColor: '#c0c0c0',
         borderColor: '#010203',
@@ -69,6 +65,13 @@ const GraphCard = ({ question, responses }) => {
       },
     ],
   };
+
+  const mean = values.length > 0 ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : 'N/A';
+  const mode =
+    values.length > 0
+      ? Object.entries(values.reduce((acc, val) => ((acc[val] = (acc[val] || 0) + 1), acc), {}))
+          .sort((a, b) => b[1] - a[1])[0][0]
+      : 'N/A';
 
   const options = {
     responsive: true,
@@ -88,28 +91,26 @@ const GraphCard = ({ question, responses }) => {
         max: overallMax,
       },
     },
+    plugins: {
+      title: {
+        display: true, 
+        text: `Mean: ${mean} | Mode: ${mode}`
+      },
+    },
   };
-
-  // Calculate mean
-  const mean = values.length > 0 ? (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2) : 'N/A';
-
-  // Calculate mode
-  const mode =
-    values.length > 0
-      ? Object.entries(values.reduce((acc, val) => ((acc[val] = (acc[val] || 0) + 1), acc), {}))
-          .sort((a, b) => b[1] - a[1])[0][0]
-      : 'N/A';
 
   return (
     <div className="p-4 rounded-lg border shadow border-ctp-base bg-ctp-surface" style={{ height: '350px' }}>
-      <Bar data={data} options={options} />
-      <div className="flex flex-row justify-center items-center mb-2 space-x-4 text-center text-md">
-        <p>Mean: <strong>{mean}</strong></p>
-        <p>Mode: <strong>{mode}</strong></p>
+      <div className="px-2 w-full font-semibold text-center break-words text-md">
+        {question.question}
       </div>
+     
+      <Bar data={data} options={options} />
+    
     </div>
   );
 };
+
 
 
 

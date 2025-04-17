@@ -1,13 +1,21 @@
 # surveyor
 
-Simple survey site for my AP Research project. <br/>
+Simple survey site and graph generator for my AP Research project. <br/>
 Uses Firebase to store questions and responses, and thus can be adapted to suit your needs using your own Firebase project and config. <br />
-I'll probably take some time later on to make it easier to customize and stuff, but for now i kinda just need it to work for me.
-how:
+There's a lot of hardcoded stuff because I was rushing, but questions and responses are modular. You'll probably want to edit Mission.jsx, Parents.jsx, Consent.jsx <br />
 
+## graph generator instructions
+- step 1 is to have survey questions and reponses. They can be exported as JSON in the utils page of the survey.
+- download questions.json and responses.json to the ./analysis directory
+- `python3 plot.py <question number OR null>`
+- if you supply a number, it will generate a graph for that question only.
+- if you don't supply a number, it will generate individual graphs for each question as well as a mosaic of all graphs. 
+- the graphs will be downloaded to `./analysis/graphs`
+
+## Survey instructions (setup and deployment)
 - clone this repo
 - create Firebase project at firebase.google.com. The Spark (free) plan should be enough depending on sample size
-- somewhere in the creation process, FIrebase will show you a config with some keys and values.
+- somewhere in the creation process, Firebase will show you a config with some keys and values.
 - create .env.local file in the cloned repo with the Firebase config options with `REACT_APP_` leading each key. You need these ones:
   - REACT_APP_FIREBASE_API_KEY
   - REACT_APP_FIREBASE_AUTH_DOMAIN
